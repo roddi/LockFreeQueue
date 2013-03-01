@@ -32,7 +32,6 @@
 #import "LockFreeQueueCocoa+CPP.h"
 #include "LockFreeQueue.h"
 
-const NSUInteger kBufferLength = 20000;
 
 @interface LockFreeQueueCocoa ()
 
@@ -41,17 +40,22 @@ const NSUInteger kBufferLength = 20000;
 @property (assign, readonly) RangeList *fetchRangeListA;
 @property (assign, readonly) RangeList *fetchRangeListB;
 @property (assign, readonly) LockFreeQueue *lockFreeQueue;
+@property (assign, readonly) char *fetchBuffer;
+@property (assign, readonly) unsigned long size;
+
 @property (assign) BOOL useANext;
 
 @end
 
 @implementation LockFreeQueueCocoa
 
-- (id) initWithSize:(NSUInteger)inSize;
+- (id) initWithSize:(unsigned long)inSize;
 {
     if (!(self=[super init]))
         return nil;
 
+    _size = inSize;
+    
     _lockFreeQueue = new LockFreeQueue();
     self.lockFreeQueue->InitWithMaxBytesDoOverwrite(inSize, false);
     
@@ -59,6 +63,8 @@ const NSUInteger kBufferLength = 20000;
     _storeRangeList = (RangeList*)malloc(sizeof(RangeList));
     _fetchRangeListA = (RangeList*)malloc(sizeof(RangeList));
     _fetchRangeListB = (RangeList*)malloc(sizeof(RangeList));
+
+    _fetchBuffer = (char*)malloc(inSize);
     
     return self;
 }
@@ -86,6 +92,7 @@ const NSUInteger kBufferLength = 20000;
     free(_storeRangeList);
     free(_fetchRangeListA);
     free(_fetchRangeListB);
+    free(_fetchBuffer);
     
     free(_lockFreeQueue);
     
@@ -94,22 +101,22 @@ const NSUInteger kBufferLength = 20000;
 
 - (NSData*) fetchData;
 {
-    char buffer[kBufferLength];
-    
     unsigned long returnedBytesCount = 0;
     
     LockFreeQueueReturnCode returnCode =
-    self.lockFreeQueue->Fetch(buffer,
-                              kBufferLength,
+    self.lockFreeQueue->Fetch(self.fetchBuffer,
+                              self.size,
                               self.useANext ? self.fetchRangeListA : self.fetchRangeListB,
                               &returnedBytesCount);
     
     if (returnCode != LockFreeQueue_OK)
+    {
         return nil;
+    }
 
     self.useANext = !self.useANext;
     
-    NSData *data = [NSData dataWithBytes:buffer length:returnedBytesCount];
+    NSData *data = [NSData dataWithBytes:self.fetchBuffer length:returnedBytesCount];
     
     return data;
 }
@@ -123,7 +130,7 @@ const NSUInteger kBufferLength = 20000;
     NSAssert(returnCode != LockFreeQueue_rangeListInUse, @"range list in use!");
     
     if (returnCode == LockFreeQueue_notEnoughSpaceLeft ||
-        returnCode == LockFreeQueue_bufferToSmall)
+        returnCode == LockFreeQueue_casUnsuccessful)
     {
         return NO;
     }
@@ -136,6 +143,11 @@ const NSUInteger kBufferLength = 20000;
     }
 
     return YES;
+}
+
+- (void*)lockFreeQueueVoid;
+{
+    return (void*)self.lockFreeQueue;
 }
 
 @end

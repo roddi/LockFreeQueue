@@ -33,9 +33,11 @@
 
 @interface LockFreeQueueCocoa : NSObject
 
-- (id) initWithSize:(NSUInteger)inSize;
+- (id) initWithSize:(unsigned long)inSize;
 
 - (NSData*) fetchData;
 - (BOOL) storeData:(NSData*)inData;
+
+- (void*)lockFreeQueueVoid;
 
 @end
