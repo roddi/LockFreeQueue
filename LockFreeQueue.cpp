@@ -31,6 +31,9 @@
 #include "LockFreeQueue.h"
 
 #include <libkern/OSAtomic.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 LockFreeQueue::LockFreeQueue()
 {

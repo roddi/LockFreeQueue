@@ -31,8 +31,6 @@
 #ifndef __LockFreeQueue__
 #define __LockFreeQueue__
 
-#include <iostream>
-
 const static unsigned long kMaxMessageCount = 100; //!< hardcoded max messge the RangeList can hold 
 
 /// \enum LockFreeQueueReturnCode
