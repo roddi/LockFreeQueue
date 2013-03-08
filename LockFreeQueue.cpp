@@ -428,7 +428,7 @@ unsigned long   LockFreeQueue::FreeBytesWithList(RangeList* inRangeList)
         result += secondRange.mLength;
     }
     
-    printf("free: [%d,%d][%d,%d] - %d\n", (int)firstRange.mPosition, (int)firstRange.mLength, (int)secondRange.mPosition, (int)secondRange.mLength, (int)result);
+    //printf("(%p) free: [%d,%d][%d,%d] - %d\n", this, (int)firstRange.mPosition, (int)firstRange.mLength, (int)secondRange.mPosition, (int)secondRange.mLength, (int)result);
     
     return result;
 
