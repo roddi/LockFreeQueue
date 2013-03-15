@@ -30,7 +30,10 @@
 
 #import <Foundation/Foundation.h>
 
-
+/// \brief Objective-C / Cocoa class that encapsulates the LockFreeQueue
+///
+/// You can import the LockFreeQueueCocoa.h into a .m file it does not contain
+/// C++ code. 
 @interface LockFreeQueueCocoa : NSObject
 
 - (id) initWithSize:(unsigned long)inSize;

@@ -33,6 +33,8 @@
 #include "LockFreeQueue.h"
 
 
+/// \brief class extension for private stuff
+///
 @interface LockFreeQueueCocoa ()
 
 @property (assign, readonly) RangeList *reserveRangeList;
@@ -99,6 +101,10 @@
     [super dealloc];
 }
 
+/**
+ \brief fetch one packet of data
+ 
+ */
 - (NSData*) fetchData;
 {
     unsigned long returnedBytesCount = 0;
@@ -121,6 +127,11 @@
     return data;
 }
 
+/**
+ \brief store one packet of data
+ 
+ **CAUTION** this can block!
+ */
 - (BOOL) storeData:(NSData*)inData;
 {
     LockFreeQueueReturnCode returnCode = self.lockFreeQueue->ReserveRange(inData.length, self.reserveRangeList);
@@ -145,6 +156,12 @@
     return YES;
 }
 
+/**
+ \brief return the LockFreeQueue object as a void pointer
+ 
+ **CAUTION** void pointer! I hope you know what that means. But you can still access the
+ LockFreeQueue object from a .m file with this method if needed.
+ */
 - (void*)lockFreeQueueVoid;
 {
     return (void*)self.lockFreeQueue;

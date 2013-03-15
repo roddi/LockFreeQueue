@@ -34,6 +34,9 @@
 
 class LockFreeQueue;
 
+/// \brief category for accessing the C++ LockFreeQueue object
+///
+/// you can only include this in a .mm file. It contains and includes C++ code
 @interface LockFreeQueueCocoa (CPP)
 
 @property (assign, readonly) LockFreeQueue *lockFreeQueue;
