@@ -32,6 +32,11 @@
 #import "LockFreeQueueCocoa+CPP.h"
 #include "LockFreeQueue.h"
 
+#ifndef __has_feature
+#define __has_feature(x) 0
+#endif
+
+
 
 /// \brief class extension for private stuff
 ///
@@ -97,8 +102,10 @@
     free(_fetchBuffer);
     
     free(_lockFreeQueue);
-    
+
+#if !__has_feature(objc_arc)
     [super dealloc];
+#endif
 }
 
 /**
